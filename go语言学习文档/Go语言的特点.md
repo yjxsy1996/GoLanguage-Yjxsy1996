@@ -12,7 +12,7 @@
 
 5、部分程序代码
 
-```
+```go
 小试牛刀:
 package main
 import "fmt"
@@ -35,7 +35,7 @@ funt getAll(n1 int,n2 int)(int,int){
 
 ```
 
-```
+```go
 //分别测试指针和值接收（含有结构体）
 package main
 
