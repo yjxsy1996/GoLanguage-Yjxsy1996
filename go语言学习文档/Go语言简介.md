@@ -7,7 +7,7 @@
 
 - 语法来说还是相对简单，类似于js的语法
 
-  ```
+  ```go
   var a,b = 1,2
   a,b = b,a
   fmt.Println(a,b)
@@ -21,7 +21,7 @@
 
   
 
-```
+```go
 a := 1
 b := false
 
@@ -31,7 +31,7 @@ b := false
 
 - 内置并发
 
-  ```
+  ```go
   go func(){
      //do something
   }
