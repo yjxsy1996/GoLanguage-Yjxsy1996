@@ -182,3 +182,174 @@ GoLang变量使用的几种形式:
   ***简单来说 ：大写字母开头的变量，方法暴露给其他包用的，包内的话可以随便引用\***
 
 ​        **注意：在main包中的函数之间不能互相调用，如果非要调用可以同时选中两个.go文件然后右击run运行即可，一般其他包没有这种限制;**
+
+
+
+**Golang没有专门的字符类型，我们使用byte存储，传统字符串是由单个字符组成，Golang中字符由字节组成**
+
+字符格式输出：
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+
+	var c1 byte = 'a'
+	var c2 byte = 'b'
+	var c3 byte = '0'
+
+	fmt.Println("c1 = ",c1)
+	fmt.Println("c2 = ",c2)
+	fmt.Println("c3 = ",c3)
+
+	//按照字符形式输出
+	fmt.Print("c2=%c",c2)
+
+
+}
+```
+
+> Go语言允许使用转义字符'\'来将其后的字符转换为特殊字符类型变量，例如:var c3 char = '\n'表示换行符;
+>
+> Go语言中的编码是使用的utf8(unicode)，其中英文字母占据一个字节，汉字占据3个字节;
+>
+> 其实我们在Go中直接输出字符的时候其实是输出的对应的UTF-8的编码的码值;
+>
+> 我们可以直接给变量赋值一个数字，要是这个时候使用%c输出是，会输出该数字对应的unicode字符;
+>
+> ```go
+> var c4 int =2269//22269-->'国'
+> fmt.Print("c4=%c\n",c4)
+> ```
+>
+> 字符类型是可以进行运算的，相当于一个整数，其实都是因为都有各自的Unicode编码。
+>
+> 现在使用Go语言再也没有Java中jsp那种乱码问题了，因为现在在Go语言中只有utf-8
+
+
+
+## Go中字符串的注意事项
+
+字符串只要赋值了就不能被改变，这点类似于Java中的String类
+
+```
+var str string = "hello"
+	str[0] = 'a' //这是错误的
+	fmt.Println("str=",str)
+```
+
+字符串可以使用""和反引号(``)
+
+反引号实现字符串原始输出:
+
+```go
+//反引号实现原始字符串的输出
+	str3 := `//var str1 string = "你好世界!"
+	//fmt.Println(str1)
+
+	//var str string = "hello"
+	//str[0] = 'a'
+	//fmt.Println("str=",str)`
+
+	fmt.Println(str3)
+	
+	输出：//var str1 string = "你好世界!"
+	//fmt.Println(str1)
+
+	//var str string = "hello"
+	//str[0] = 'a'
+	//fmt.Println("str=",str)
+```
+
+字符串使用"+"号拼接
+
+注意拼接多行字符串时候，需要把"+"号放在上行
+
+```go
+str4 := "hello + hello + hello + hello" +
+		"hello" + "hello" +"hello" +
+		"hello"+
+		"world!"
+
+	fmt.Println("str4 = ",str4)
+```
+
+> 在Golang中默认值又被称作零值
+
+> ```go
+> 	//看看几种数据类型的默认值
+> 	var a int //0
+> 	var b float64 //0
+> 	var isMe bool //false
+> 	var name string //""
+> 
+> 	//%v表示按照变量值输出
+> 	fmt.Print("a=%d,b=%v,isMe=%v,name=%s",a,b,isMe,name)
+> ```
+
+
+
+**基本数据类型的相互转换**(基本-->string)
+
+不管低-->高，还是高-->低，都需要显示转换
+
+> **Sprintf (将一个指定数据类型转换为你需要的字符串)**
+
+```go
+	//基本类型转为string
+	//var num int = 99
+	//var num2 float64 = 23.43
+	//var b bool = true
+	//var str string
+	var myChar byte = 'h'
+
+	//使用Sprintf
+	////s := fmt.Sprintf("%d", num)
+	//s := fmt.Sprintf("%f", num2)
+	//fmt.Printf("s type %T str = %v %d",s,s,unsafe.Sizeof(s))
+	//fmt.Printf("s = %T\n,s=%q",s,s)
+
+	//字符转换为字符串
+	sprintf := fmt.Sprintf("%c", myChar)
+	fmt.Printf("s = %T\ns=%q",sprintf,sprintf)
+```
+
+> **使用strconv进行转换**
+
+```go
+	//var num3 int = 90
+	//var num4 float64 = 23.97
+	var result bool = false
+	//formatInt := strconv.FormatInt(int64(num3), 10)
+	//formatInt := strconv.FormatFloat(num4, 'f',10,64)
+	formatBool := strconv.FormatBool(result)
+	fmt.Printf("str type is %T ,str is %q",formatBool,formatBool)
+```
+
+
+
+> strconv包中有一个函数叫Itoa 
+>
+> ```go
+> 	var num5 int64 = 21
+> 	itoa := strconv.Itoa(int(num5))
+> 	fmt.Printf("%T %q",itoa,itoa)
+> ```
+>
+> **字符串转为其他基本数据类型**
+>
+> ```go
+>     var str string = "true"
+> 	var str2 string = "122222"
+> 	var n1 int64
+> 	var parseBool bool
+> 	parseBool,_ =  strconv.ParseBool(str)
+> 	fmt.Printf("%T %#v\n",parseBool,parseBool)
+> 
+> 	n1,_ = strconv.ParseInt(str2,10,64)
+> 	fmt.Printf("%T %#v",n1,n1)
+> ```
+>
+> ***注意***：确保string类型能够转成有效的数据，比如我们不能直接把"hello"转成int,这时候golang直接就会转成0，其他比如string转为bool随机转为false，其为默认值.其他类似。
